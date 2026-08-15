@@ -11,8 +11,21 @@ Double-double arithmetic (1e-32 precision). Adaptive noise estimation (AMAD-X). 
 
 ## 📁 Structure
 - `src/` — CUDA kernels & core logic
-- `docs/` — Architecture & benchmarks
+- `docs/` — Architecture & benchmarks (will be soon)
 - `examples/` — Ready-to-run demos
+
+## 🔧 Quick Build & Run
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/alw-systems-portfolio.git
+cd alw-systems-portfolio
+
+# Compile the demo
+nvcc -O3 -arch=sm_61 -I. examples/simple_demo.cu -o simple_demo -lcuda -lcudart -lm
+
+# Run
+./simple_demo
 
 ## 🔒 License
 **CC BY-NC 4.0** — Free for review & academic use. Commercial use requires separate license.
