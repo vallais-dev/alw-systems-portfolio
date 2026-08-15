@@ -2,7 +2,7 @@
 
 ## Overview
 
-ALW Systems is a **GPU-accelerated signal processing framework** designed for high‑performance decomposition, analysis, and feature extraction from complex signals. The system is built entirely on **CUDA** with **97% custom code**, featuring a proprietary **double‑double arithmetic** backend for ultra‑high precision (≈1e‑30).
+ALW Systems is a **GPU-accelerated signal processing framework** designed for high‑performance decomposition, analysis, and feature extraction from complex signals. The system is built entirely on **CUDA** with **97% custom code**, featuring a proprietary **double‑double arithmetic** backend for ultra‑high precision (≈1e‑32).
 
 The framework implements a complete pipeline from raw signal to interpretable atomic events, combining:
 
@@ -180,53 +180,6 @@ Performance:
 
 Memory‑efficient shared memory reduction
 
-File Reference: src/afc/
-
-
-    Data Flow
-
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Raw Input Signal                                         │
-│    d_y_hi[N], d_y_lo[N] (double-double)                     │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 2. Detrending (Optional)                                    │
-│    - Adaptive offline (BIC + CUSUM)                         │
-│    - Causal online (RLS + Huber)                            │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 3. AMAD‑X Noise Estimation                                  │
-│    Output: σ (noise standard deviation)                     │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 4. Frame Extraction                                        │
-│    - Sliding window (frame_size, hop_size)                  │
-│    - Optional Hanning window                                │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 5. EOP Sparse Decomposition                                 │
-│    Input: frame, dictionary, σ, parameters                  │
-│    Output: events (atom_index, amplitude, phase, energy)    │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 6. Final Regression (Optional)                              │
-│    - Solve least squares on selected atoms                  │
-│    - Refine amplitudes/coefficients                         │
-└─────────────────────┬───────────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 7. Output                                                   │
-│    - Detected events (frame_start, atom, amplitude, etc.)   │
-│    - Residual signal                                        │
-│    - Orthogonal basis coefficients (optional)               │
-└─────────────────────────────────────────────────────────────┘
-
-
     Key Technologies
 
     Double‑Double Arithmetic
@@ -260,44 +213,6 @@ DictionaryManager: LRU cache for multi‑frame processing
 Arena allocation: Pinned memory for fast CPU↔GPU transfers
 
 Memory pooling: Reuse buffers across frames
-
-
-    File Structure
-
-src/
-├── core/
-│   └── alw_math.h              # Double-double arithmetic, macros, guards
-├── amad_x/
-│   ├── amad_x.h                # Public interface
-│   └── amad_x_kernel.cu        # Multi-scale noise estimation kernels
-├── aeds/
-│   ├── aeds_solver.hpp         # Solver interface (public)
-│   └── aeds_kernel.cu          # Matrix-vector, residual, update kernels
-├── eop/
-│   ├── eop_core.h              # Pursuit interface
-│   └── eop_core.cu             # Projection, coherence, energy kernels
-├── eod/
-│   ├── eod_core.h              # Dictionary learning interface
-│   └── eod_core.cu             # Training, gradient, update kernels
-├── afc/
-│   ├── afc.h                   # Frequency control interface
-│   └── afc.cu                  # Scanning, refinement kernels
-└── utils/
-    ├── cuda_pool_guard.h       # RAII memory management
-    ├── dictionary_manager.h    # LRU dictionary cache
-    └── helios_config.h         # Configuration structures
-
-
-
-    Performance Characteristics
-
-
-Module  Speedup vs CPU  Memory Efficiency  Precision
-AMAD‑X	   8‑10×	        88%              1e‑32
-AEDS	  15‑20×	        92%              1e‑32
-EOP	      12‑15×            90%              1e‑32
-EOD	      10‑12×	        85%              1e‑32
-AFC	      9‑12×	            87%              1e‑32
 
 
     System Requirements
