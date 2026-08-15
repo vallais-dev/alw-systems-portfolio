@@ -16,7 +16,7 @@ Double-double arithmetic (1e-32 precision). Adaptive noise estimation (AMAD-X). 
 
 ## 🔧 Quick Build & Run
 
-bash
+```bash
 # Clone the repository
 git clone https://github.com/yourusername/alw-systems-portfolio.git
 cd alw-systems-portfolio
@@ -26,6 +26,8 @@ nvcc -O3 -arch=sm_61 -I. examples/simple_demo.cu -o simple_demo -lcuda -lcudart 
 
 # Run
 ./simple_demo
+
+```
 
 ## 🔒 License
 **CC BY-NC 4.0** — Free for review & academic use. Commercial use requires separate license.
