@@ -12,25 +12,6 @@ The framework implements a complete pipeline from raw signal to interpretable at
 - **Dictionary learning** (EOD)
 - **Frequency adaptation** (AFC)
 
----
-
-## System Architecture Diagram
-
-```mermaid
-flowchart TD
-    A[Input Signal<br/>double* d_y_hi, d_y_lo] --> B[Detrending<br/>Adaptive / Causal]
-    B --> C[AMAD‑X<br/>Noise Estimation]
-    C --> D{Σ<br/>Signal + Noise Estimate}
-    D --> E[Frame Extraction<br/>Sliding Window]
-    E --> F[EOP<br/>Energy‑Optimized Pursuit]
-    F --> G[Detected Events<br/>Atomic Decomposition]
-    G --> H[Final Regression<br/>Coefficient Refinement]
-    H --> I[Output<br/>Events + Residual]
-
-    J[Dictionary<br/>Atom Library] --> F
-    K[EOD<br/>Dictionary Learning] -.-> J
-    L[AFC<br/>Frequency Control] -.-> J
-    M[Orthogonal Basis<br/>Q, R] -.-> F
 
     Module Descriptions
 
@@ -312,11 +293,11 @@ src/
 
 
 Module  Speedup vs CPU  Memory Efficiency  Precision
-AMAD‑X	    8‑10×	    	88%          1e‑30
-AEDS	    15‑20×	        92%          1e‑30
-EOP	    12‑15×              90%          1e‑30
-EOD	    10‑12×	        85%          1e‑30
-AFC	    9‑12×	        87%          1e‑30
+AMAD‑X	   8‑10×	        88%              1e‑32
+AEDS	  15‑20×	        92%              1e‑32
+EOP	      12‑15×            90%              1e‑32
+EOD	      10‑12×	        85%              1e‑32
+AFC	      9‑12×	            87%              1e‑32
 
 
     System Requirements
